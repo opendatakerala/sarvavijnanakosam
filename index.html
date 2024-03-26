@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sarvavijnanakosam</title>
+    <style>
+        body {
+            max-width: 640px;
+            margin: 30px auto;
+        }
+    </style>
+    
+</head>
+<body>
+    <input id="search" disabled></input>
+    <div id="table"></div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js" integrity="sha512-dfX5uYVXzyU8+KHqj8bjo7UkOdg18PaOtpa48djpNbZHwExddghZ+ZmzWT06R5v6NSk3ZUfsH6FNEDepLx9hPQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script type="text/javascript">
+        const q = document.getElementById('search');
+        q.value = "";
+        Papa.parse("./Sarvavijnanakosam.csv", {
+            download: true,
+            complete: function(results) {
+                const t = document.getElementById("table");
+                results.data.forEach(row => {
+                    const div = document.createElement('div');
+                    div.classList.add('entry');
+                    const link = document.createElement('a');
+                    link.href = row[1];
+                    const title = document.createTextNode(row[2]);
+                    link.appendChild(title);
+                    div.appendChild(link);
+                    div.style.display = "none";
+                    t.appendChild(div);
+                });
+                q.disabled=false;
+            }
+        })
+        q.addEventListener('input', function(e) {
+            e.preventDefault();
+            document.querySelectorAll('.entry').forEach(entry => {
+                if (entry.innerHTML.includes(e.target.value)) {
+                    entry.style.display = "block";
+                } else {
+                    entry.style.display = "none";
+                }
+            })
+        })
+    </script>
+</body>
+</html>
