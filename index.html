@@ -1,60 +1,164 @@
 <!DOCTYPE html>
 <html lang="ml">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>സർവ്വവിജ്ഞാനകോശം Sarvavijnanakosam</title>
-    <meta name="description" content=കേരള ഗവണ്മെൻ്റ് സാംസ്കാരികവകുപ്പിൻ്റെ സ്റ്റേറ്റ് ഇൻസ്റ്റിറ്റ്യൂട്ട് ഓഫ് എൻസൈക്ലോപീഡിക് പബ്ലിക്കേഷൻസ്  പ്രസിദ്ധീകരിക്കുന്ന മലയാളത്തിലെ ഒരു വിജ്ഞാനകോശമാണ് സർവ്വവിജ്ഞാനകോശം" />
-    <meta name="keywords" content="sarvavijnanakosam, malayalam encyclopaedia, malayalam index, keralam, kerala, malayalam, translation, knowledge, culture, vijnanakosam, മലയാളം, സർവ്വവിജ്ഞാനകോശം, കേരളം" />
+    <meta name="description" content=കേരള ഗവണ്മെൻ്റ് സാംസ്കാരികവകുപ്പിൻ്റെ സ്റ്റേറ്റ് ഇൻസ്റ്റിറ്റ്യൂട്ട് ഓഫ്
+        എൻസൈക്ലോപീഡിക് പബ്ലിക്കേഷൻസ് പ്രസിദ്ധീകരിക്കുന്ന മലയാളത്തിലെ ഒരു വിജ്ഞാനകോശമാണ് സർവ്വവിജ്ഞാനകോശം" />
+    <meta name="keywords"
+        content="sarvavijnanakosam, malayalam encyclopaedia, malayalam index, keralam, kerala, malayalam, translation, knowledge, culture, vijnanakosam, മലയാളം, സർവ്വവിജ്ഞാനകോശം, കേരളം" />
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap" rel="stylesheet" />
+    <!-- MDB -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.min.css" rel="stylesheet" />
 
-  
     <style>
         body {
+            text-align: center;
             max-width: 640px;
             margin: 30px auto;
         }
+
+        img {
+            max-width: 100%;
+        }
+
+        .title {
+            font-size: 4rem;
+        }
+
+        @media (max-width: 640px) {
+            .title {
+                font-size: 2rem;
+            }
+        }
+
+        #search-only {
+            display: none;
+        }
+
+        #table {
+            display: none;
+        }
+
+        #search-form {
+            margin-bottom: 10px;
+        }
+
+        .entry {
+            text-align: left;
+            padding: 10px;
+            margin: 5px;
+            font-size: larger;
+            display: none;
+            gap: 5px;
+        }
+
+        .vol {
+            background-color: gray;
+            color: white;
+            padding: 10px 5px;
+        }
     </style>
+
 
 </head>
 
 <body>
-    <input id="search" disabled></input>
+    <h1 class="title">
+        <img src="./sarvavijnanakosham.png" alt="സര്‍വ്വവിജ്ഞാനകോശം" />
+    </h1>
+    <div id="home-only">
+        <img src="https://sarva.kerala.gov.in/wp-content/uploads/2018/11/home-page-banner-1.jpg">
+    </div>
+    <form id="search-form">
+        <div class="input-group">
+            <button class="btn btn-dark dropdown-toggle" type="button" data-mdb-dropdown-init data-mdb-ripple-init
+                aria-expanded="false">
+                Sarvavijnanakosam
+            </button>
+            <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#">Sarvavijnanakosam</a></li>
+            </ul>
+            <div class="form-outline" data-mdb-input-init>
+
+                <input type="search" id="search" class="form-control" />
+                <label class="form-label" for="search">Search</label>
+            </div>
+            <button type="submit" class="btn btn-dark" data-mdb-ripple-init>
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+    </form>
+    <div id="search-only">
+        <div class="spinner-border" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
     <div id="table"></div>
+    <!-- MDB -->
+    <script type="text/javascript"
+        src="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/7.2.0/mdb.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"
         integrity="sha512-dfX5uYVXzyU8+KHqj8bjo7UkOdg18PaOtpa48djpNbZHwExddghZ+ZmzWT06R5v6NSk3ZUfsH6FNEDepLx9hPQ=="
         crossorigin="anonymous" referrerpolicy="no-referrer"></script>
     <script type="text/javascript">
         const q = document.getElementById('search');
         q.value = "";
-        Papa.parse("./Sarvavijnanakosam.csv", {
-            download: true,
-            complete: function (results) {
-                const t = document.getElementById("table");
-                results.data.forEach(row => {
-                    if (row[1] == "link") return;
-                    const div = document.createElement('div');
-                    div.classList.add('entry');
-                    const link = document.createElement('a');
-                    link.href = row[1];
-                    const title = document.createTextNode(row[2]);
-                    link.appendChild(title);
-                    div.appendChild(link);
-                    div.style.display = "none";
-                    t.appendChild(div);
-                });
-                q.disabled = false;
-            }
+        const download = new Promise((resolve, reject) => {
+            Papa.parse("./Sarvavijnanakosam.csv", {
+                download: true,
+                complete: function (results) {
+                    resolve(results.data);
+                }
+            })
         })
-        q.addEventListener('input', function (e) {
+
+        const search = document.getElementById('search-form');
+
+        // https://stackoverflow.com/a/494348
+        function createElementFromHTML(htmlString) {
+            var div = document.createElement('div');
+            div.innerHTML = htmlString.trim();
+
+            // Change this to div.childNodes to support multiple top-level nodes.
+            return div.firstChild;
+        }
+        download.then((data) => {
+            const t = document.getElementById("table");
+            data.forEach(row => {
+                if (row[1] == "link") return;
+                const entry = createElementFromHTML(`
+                    <div class="entry">
+                        <div class="vol">${row[0]}</div>
+                        <a href="${row[1]}">${row[2]}</a>
+                    </div>
+                `);
+                t.appendChild(entry);
+            });
+        })
+
+        search.addEventListener('submit', (e) => {
             e.preventDefault();
+            document.getElementById('table').style.display = 'none';
+            document.getElementById('search-only').style.display = 'block';
             document.querySelectorAll('.entry').forEach(entry => {
-                if (entry.innerHTML.includes(e.target.value)) {
-                    entry.style.display = "block";
+                if (entry.innerHTML.includes(q.value)) {
+                    entry.style.display = "flex";
                 } else {
                     entry.style.display = "none";
                 }
             })
-        })
+            setTimeout(() => {
+                document.getElementById('search-only').style.display = 'none';
+                document.getElementById('table').style.display = 'block';
+            }, 1000)
+        })  
     </script>
 </body>
+
 </html>
