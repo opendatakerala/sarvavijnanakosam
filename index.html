@@ -79,15 +79,15 @@
         <div class="input-group">
             <button class="btn btn-dark dropdown-toggle" type="button" data-mdb-dropdown-init data-mdb-ripple-init
                 aria-expanded="false">
-                Sarvavijnanakosam
+                സര്‍വ്വവിജ്ഞാനകോശം
             </button>
             <ul class="dropdown-menu">
-                <li><a class="dropdown-item" href="#">Sarvavijnanakosam</a></li>
+                <li><a class="dropdown-item" href="#">സര്‍വ്വവിജ്ഞാനകോശം</a></li>
             </ul>
             <div class="form-outline" data-mdb-input-init>
 
                 <input type="search" id="search" class="form-control" />
-                <label class="form-label" for="search">Search</label>
+                <label class="form-label" for="search">തിരയുക</label>
             </div>
             <button type="submit" class="btn btn-dark" data-mdb-ripple-init>
                 <i class="fas fa-search"></i>
@@ -164,6 +164,13 @@
             })
         }
 
+        const getResultEntry = (row) => createElementFromHTML(`
+                <div class="entry">
+                    <div class="vol">${row.volume}</div>
+                    <a href="${row.link}">${row.title}</a>
+                </div>
+            `);
+
         search.addEventListener('submit', (e) => {
             e.preventDefault();
             const t = document.getElementById("table");
@@ -172,15 +179,16 @@
             document.getElementById('search-only').style.display = 'block';
 
             download.then((data) => {
-                searchInData(data, q.value.toLowerCase()).slice(0, 20).forEach(row => {
-                    const entry = createElementFromHTML(`
-                        <div class="entry">
-                            <div class="vol">${row.volume}</div>
-                            <a href="${row.link}">${row.title}</a>
-                        </div>
-                    `);
-                    t.appendChild(entry);
-                })
+                const results = searchInData(data, q.value.toLowerCase())
+                if (results.length > 0) {
+                    results.slice(0, 20).forEach(row => {
+                        t.appendChild(getResultEntry(row));
+                    })
+                } else {
+                    t.appendChild(createElementFromHTML(`
+                        <div>"${q.value}"ക്കു വേണ്ടിയുള്ള തിരച്ചിലില്‍ ഒന്നും കണ്ടെത്താനായില്ല</div>
+                    `))
+                }
                 return data;
             })
             setTimeout(() => {
