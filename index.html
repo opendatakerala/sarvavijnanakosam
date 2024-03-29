@@ -157,7 +157,7 @@
             document.getElementById('search-only').style.display = 'block';
 
             download.then((data) => {
-                searchInData(data, q.value).slice(0, 20).forEach(row => {
+                searchInData(data, q.value.toLowerCase()).slice(0, 20).forEach(row => {
                     const entry = createElementFromHTML(`
                         <div class="entry">
                             <div class="vol">${row.volume}</div>
