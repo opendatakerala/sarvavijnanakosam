@@ -54,7 +54,7 @@
             padding: 10px;
             margin: 5px;
             font-size: larger;
-            display: none;
+            display: flex;
             gap: 5px;
         }
 
@@ -112,6 +112,7 @@
         const download = new Promise((resolve, reject) => {
             Papa.parse("./Sarvavijnanakosam.csv", {
                 download: true,
+                header: true,
                 complete: function (results) {
                     resolve(results.data);
                 }
@@ -128,34 +129,46 @@
             // Change this to div.childNodes to support multiple top-level nodes.
             return div.firstChild;
         }
-        download.then((data) => {
-            const t = document.getElementById("table");
-            data.forEach(row => {
-                if (row[1] == "link") return;
-                const entry = createElementFromHTML(`
-                    <div class="entry">
-                        <div class="vol">${row[0]}</div>
-                        <a href="${row[1]}">${row[2]}</a>
-                    </div>
-                `);
-                t.appendChild(entry);
-            });
-        })
+
+        const orderByScore = (list, scorer) => {
+            const scored = list.map(item => ({ item, score: scorer(item) }))
+                .filter(i => i.score > 0);
+            scored.sort((a, b) => b.score - a.score)
+            return scored.map(i => i.item);
+        }
+
+        const searchInData = (data, term) => {
+            return orderByScore(data, (item) => {
+                if (item.title === term) return 10;
+                if (item.transliteration === term) return 10;
+                if (item.title.includes(term)) return 5;
+                if (item.transliteration.includes(term)) return 5;
+                return 0;
+            })
+        }
 
         search.addEventListener('submit', (e) => {
             e.preventDefault();
-            document.getElementById('table').style.display = 'none';
+            const t = document.getElementById("table");
+            t.style.display = 'none';
+            t.replaceChildren();
             document.getElementById('search-only').style.display = 'block';
-            document.querySelectorAll('.entry').forEach(entry => {
-                if (entry.innerHTML.includes(q.value)) {
-                    entry.style.display = "flex";
-                } else {
-                    entry.style.display = "none";
-                }
+
+            download.then((data) => {
+                searchInData(data, q.value).slice(0, 20).forEach(row => {
+                    const entry = createElementFromHTML(`
+                        <div class="entry">
+                            <div class="vol">${row.volume}</div>
+                            <a href="${row.link}">${row.title}</a>
+                        </div>
+                    `);
+                    t.appendChild(entry);
+                })
+                return data;
             })
             setTimeout(() => {
                 document.getElementById('search-only').style.display = 'none';
-                document.getElementById('table').style.display = 'block';
+                t.style.display = 'block';
             }, 1000)
         })  
     </script>
