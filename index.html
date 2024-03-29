@@ -171,6 +171,11 @@
                 </div>
             `);
 
+        const getRandomBetween = (a, b) => {
+            const diff = b - a;
+            return a + Math.random() * diff;
+        }
+
         search.addEventListener('submit', (e) => {
             e.preventDefault();
             const t = document.getElementById("table");
@@ -194,7 +199,7 @@
             setTimeout(() => {
                 document.getElementById('search-only').style.display = 'none';
                 t.style.display = 'block';
-            }, 1000)
+            }, getRandomBetween(500, 2500))
         })  
     </script>
 </body>
