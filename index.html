@@ -139,10 +139,12 @@
 
         const searchInData = (data, term) => {
             return orderByScore(data, (item) => {
-                if (item.title === term) return 10;
-                if (item.transliteration === term) return 10;
-                if (item.title.includes(term)) return 5;
-                if (item.transliteration.includes(term)) return 5;
+                if (item.title === term) return 100;
+                if (item.transliteration === term) return 100;
+                if (item.title.startsWith(term)) return 50;
+                if (item.transliteration.startsWith(term)) return 50;
+                if (item.title.includes(term)) return 20;
+                if (item.transliteration.includes(term)) return 20;
                 return 0;
             })
         }
